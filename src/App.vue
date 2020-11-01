@@ -1,20 +1,36 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <!-- <HelloWorld :vmodel="textEntered" /> -->
+    From Parent <br/>
+    ---{{ textEntered }} ----
+    <br>
+    <input v-model="textEntered" placeholder="Trying out something new" />
+    <!-- <TextInput :textValue.sync="textEntered"   /> -->
+     <TextInput :textValue="textEntered" @update:textValue="textEntered = $event"   />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import HelloWorld from './components/HelloWorld.vue';
+import TextInput from './components/TextInput.vue';
 
 @Component({
   components: {
     HelloWorld,
+    TextInput,
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  @Prop() vmodel!: string;  
+  textEntered = "";
+
+  getUpdatedTextVal(val: string){
+    console.log(val);
+  }
+
+}
 </script>
 
 <style lang="scss">
