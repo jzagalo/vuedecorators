@@ -1,7 +1,6 @@
 <template>
-  <div class="hello">
-    <h1>Child {{ syncModel }}</h1>  
-    <input  placeholder="First nme" ref="ainput" />  
+  <div class="hello">     
+    <input  placeholder="Prop Sync" ref="ainput" v-model="syncModel" />  
   </div>
 </template>
 
@@ -13,8 +12,15 @@ export default class HelloWorld extends Vue {
   @PropSync("vmodel", { type: String }) private syncModel!: string;
   @Ref('ainput') readonly inputEl!: HTMLFormElement;
 
+  formData = {
+    username: 'someuser',
+    name: undefined
+  };
+
   mounted(){
-    console.log(this.inputEl.value);
+    this.formData = Object.assign({},
+    this.formData, {name: 'Some User'});
+    console.log(this.formData);
   }
 
   firstName = "Donna";

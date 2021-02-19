@@ -3,22 +3,22 @@
       {{ textValue }}
       <input 
             :value="textValue" placeholder="Enter Text"           
-            @input="$emit('update:textValue', $event.target.value)"
+            @input="updateTextValue"
       />
   </div> 
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop} from "vue-property-decorator";
+import { Vue, Component, Prop, Emit} from "vue-property-decorator";
 
 @Component
 class TextInput extends Vue {
-    @Prop() private textValue!: string;
-    
+    @Prop() private textValue!: string;    
 
-    updateInputEl(event: any){
-        this.$emit("update:textValue", event.target.value)
-    }
+    @Emit()
+    updateTextValue(event: any){
+        return event.target.value;
+    }   
 }
 
 export default TextInput;
