@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Inject } from 'vue-property-decorator';
+import { Component, Prop, Vue, Inject, Watch } from 'vue-property-decorator';
 import validation from "./validators"
 
 
@@ -40,6 +40,7 @@ export default class App extends Vue {
   private category = "";
   private price = 0;
   private validationErrors = {};
+  private hasSubmitted = false;
 
   errors(){
     return Object.values(this.validationErrors).length > 0;
@@ -47,8 +48,7 @@ export default class App extends Vue {
 
   validate(propertyName: any, value: any){
     const errors: string[] = [];
-    Object(validation)[propertyName].forEach((v: any) => {
-      console.log(v);
+    Object(validation)[propertyName].forEach((v: any) => {      
       if(!v.validator(value)){
         errors.push(v.message);
       }
@@ -61,6 +61,27 @@ export default class App extends Vue {
     }
   }
 
+  validateWatch(propertyName: string, value: string){
+   // if(this.hasSubmitted){
+      this.validate(propertyName, value);
+   // }
+  }
+
+  @Watch("name")
+  setName(value: string){
+    this.validateWatch("name", value);
+  }
+
+  @Watch("category")
+  setCategory(value: string){
+    this.validateWatch("category", value);
+  }
+
+  @Watch("price")
+  setPrice(value: string){
+    this.validateWatch("price", value);
+  }
+
   validateAll(){
     this.validate("name", this.name);
     this.validate("category", this.category);
@@ -69,10 +90,10 @@ export default class App extends Vue {
     return this.errors;
   }
 
-  handleSubmit(){
+  handleSubmit() {
+    this.hasSubmitted = true;
     if(this.validateAll()){
-      console.log(`FORM SUBMITTED: ${this.name} ${this.category} ${this.price}`);
-      console.log(this.validationErrors);
+      console.log(`FORM SUBMITTED: ${this.name} ${this.category} ${this.price}`);    
     }
   } 
 
