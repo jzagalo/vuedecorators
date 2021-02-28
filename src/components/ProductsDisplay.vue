@@ -28,7 +28,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch, Ref, PropSync } from 'vue-property-decorator';
+import { VueConstructor } from 'vue';
+import { Component, Prop, Vue, Inject } from 'vue-property-decorator';
 
 @Component({
   filters: {
@@ -45,12 +46,18 @@ export default class ProductsDisplay extends Vue {
     { id: 5, name: "Stadium", price: 79500 }
   ];  
 
+  @Inject("eventBus") eventBus: any;
+
+  mounted(){
+    console.log(this.eventBus);
+  }
+
   editProduct(product: any){
-    console.log(product);
+    this.eventBus.$emit("edit", product);
   }
 
   createNew(){
-    console.log("ddd");
+    this.eventBus.$emit("create");
   }
 
 }

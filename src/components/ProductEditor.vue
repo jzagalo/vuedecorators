@@ -1,8 +1,8 @@
 <template>
     <div>
-      <editor-field v-bind:label="idLabel"></editor-field>      
-      <editor-field v-bind:label="nameLabel"></editor-field>
-      <editor-field v-bind:label="priceLabel"></editor-field>
+      <editor-field v-bind:label="idLabel" :property="product.id"  name="id"></editor-field>      
+      <editor-field v-bind:label="nameLabel" :property="product.name" name="name" ></editor-field>
+      <editor-field v-bind:label="priceLabel" :property="product.price" name="price"></editor-field>
       <div class="text-center"> 
         <button class="btn btn-primary" @click="save">
           {{ editing ? "Save": "Create"}}
@@ -13,8 +13,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Provide } from 'vue-property-decorator';
+import { Component, Vue, Provide, Inject, Watch } from 'vue-property-decorator';
 import EditorField from "./EditorField.vue";
+
+type productType = {
+  id: number;
+  name: string;
+  price: number;
+}; 
 
 @Component({
   components: {
@@ -23,10 +29,14 @@ import EditorField from "./EditorField.vue";
 })
 export default class ProductEditor extends Vue {
   private editing = false;
-  private product = { };
+  private product: any = {};
   private idLabel = "ID";
   private nameLabel = "Name";
   private priceLabel = "Price";
+  private localBus = new Vue();
+  @Inject("eventBus") private eventBus: any;
+  @Provide() private editingEventBus = this.localBus;
+
 
   startEdit(product: any) {
     this.editing = true;
@@ -46,13 +56,27 @@ export default class ProductEditor extends Vue {
     };
   }
 
+  created(){
+    this.eventBus.$on("create", this.startCreate);
+    this.eventBus.$on("edit", this.startEdit);
+    this.localBus.$on("change", 
+      (change: any) => { 
+        this.product[change.target.name] = change.target.value
+    });
+  }
+
   save(){
-    console.log(`Edit Complete: ${JSON.stringify(this.product)}`);
+    this.eventBus.$emit("complete", this.product);
     this.startCreate();
+    console.log(`Edit Complete: ${JSON.stringify(this.product)}`);
   }
 
   cancel(){
-    this.product = {};
+    this.product = {
+      id: 0,
+      price: 0,
+      name: ""
+    };
     this.editing = false;
   }
 
@@ -60,6 +84,11 @@ export default class ProductEditor extends Vue {
     bg: "bg-light",
     text: "text-danger"
   };
+
+  @Watch("product")
+  changeProduct(newVal: productType){
+    this.localBus.$emit("target", newVal);
+  }
 
 }
 </script>
