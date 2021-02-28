@@ -2,12 +2,13 @@
  <div>
     <table class="table table-sm table-striped table-bordered">
       <tr>
-        <th>ID</th><th>Name</th><th>Price</th><th></th>
+        <th>ID</th><th>Name</th><th>Category</th><th>Price</th><th></th>
       </tr>
     <tbody>
       <tr v-for="p in products" v-bind:key="p.id">
         <td>{{ p.id }}</td>
         <td>{{ p.name }}</td>
+        <td>{{ p.category }}</td>
         <td>{{ p.price | currency }}</td>
         <td>
           <button class="btn btn-sm btn-primary"
@@ -30,6 +31,10 @@
 <script lang="ts">
 import { VueConstructor } from 'vue';
 import { Component, Prop, Vue, Inject } from 'vue-property-decorator';
+import Axios from "axios";
+
+const baseUrl ="http://localhost:3500/products/"
+
 
 @Component({
   filters: {
@@ -39,17 +44,13 @@ import { Component, Prop, Vue, Inject } from 'vue-property-decorator';
 export default class ProductsDisplay extends Vue {
 
   private products = [
-    { id: 1, name: "Kayak", price: 275 },
-    { id: 2, name: "Lifejacket", price: 48.95 },
-    { id: 3, name: "Soccer Ball", price: 19.50 },
-    { id: 4, name: "Corner Flags", price: 39.95 },
-    { id: 5, name: "Stadium", price: 79500 }
+   
   ];  
 
   @Inject("eventBus") eventBus: any;
 
-  mounted(){
-    console.log(this.eventBus);
+  created(){
+    Axios.get(baseUrl).then(resp => this.processProducts(resp.data));
   }
 
   editProduct(product: any){
@@ -58,6 +59,11 @@ export default class ProductsDisplay extends Vue {
 
   createNew(){
     this.eventBus.$emit("create");
+  }
+
+  processProducts(newProducts: object[]){
+    this.products.splice(0);
+    this.products.push(...newProducts);
   }
 
 }

@@ -1,9 +1,9 @@
 <template>
   <div class="form-group">
     <label>{{formattedLabel}}</label>
-    <input :value="componentValue" 
+    <input :value="property" 
           :class="[colours.bg, colours.text]"
-           class="form-control"  :name="name"/>
+           class="form-control"  :name="name"  />
  </div>
 </template>
 
@@ -31,10 +31,10 @@ export default class EditorField extends Vue {
         (p: any) => this.componentValue = p[this.name])
     }
 
-    @Watch("value")
+    @Watch("property")
     changeValue(newValue: string){
         this.editingEventBus.$emit("change", {
-            name: this.name, value: this.componentValue
+            name: this.name, value: newValue
         })
     }
 }

@@ -1,7 +1,8 @@
 <template>
     <div>
       <editor-field v-bind:label="idLabel" :property="product.id"  name="id"></editor-field>      
-      <editor-field v-bind:label="nameLabel" :property="product.name" name="name" ></editor-field>
+      <editor-field v-bind:label="nameLabel" :property="product.name" name="name"></editor-field>
+      <editor-field v-bind:label="categoryLabel" :property="product.category" name="catgory"></editor-field>
       <editor-field v-bind:label="priceLabel" :property="product.price" name="price"></editor-field>
       <div class="text-center"> 
         <button class="btn btn-primary" @click="save">
@@ -32,6 +33,7 @@ export default class ProductEditor extends Vue {
   private product: any = {};
   private idLabel = "ID";
   private nameLabel = "Name";
+  private categoryLabel = "Category";
   private priceLabel = "Price";
   private localBus = new Vue();
   @Inject("eventBus") private eventBus: any;
@@ -43,6 +45,7 @@ export default class ProductEditor extends Vue {
     this.product = {
       id: product.id,
       name: product.name,
+      category: product.category,
       price: product.price
     };
   }
@@ -52,6 +55,7 @@ export default class ProductEditor extends Vue {
     this.product = {
       id: 0,
       name: "",
+      category: "",
       price: 0
     };
   }
@@ -61,7 +65,7 @@ export default class ProductEditor extends Vue {
     this.eventBus.$on("edit", this.startEdit);
     this.localBus.$on("change", 
       (change: any) => { 
-        this.product[change.target.name] = change.target.value
+        this.product[change.name] = change.value
     });
   }
 
@@ -75,6 +79,7 @@ export default class ProductEditor extends Vue {
     this.product = {
       id: 0,
       price: 0,
+      category: "",
       name: ""
     };
     this.editing = false;
