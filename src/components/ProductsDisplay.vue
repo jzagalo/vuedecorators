@@ -29,12 +29,7 @@
 </template>
 
 <script lang="ts">
-import { VueConstructor } from 'vue';
-import { Component, Prop, Vue, Inject } from 'vue-property-decorator';
-import Axios from "axios";
-
-const baseUrl ="http://localhost:3500/products/"
-
+import { Component, Vue, Inject } from 'vue-property-decorator';
 
 @Component({
   filters: {
@@ -48,9 +43,10 @@ export default class ProductsDisplay extends Vue {
   ];  
 
   @Inject("eventBus") eventBus: any;
+  @Inject("restDataSource") restDataource: any;
 
-  created(){
-    Axios.get(baseUrl).then(resp => this.processProducts(resp.data));
+  async created(){
+    this.processProducts(await this.restDataource.getProducts());   
   }
 
   editProduct(product: any){
@@ -61,7 +57,7 @@ export default class ProductsDisplay extends Vue {
     this.eventBus.$emit("create");
   }
 
-  processProducts(newProducts: object[]){
+  processProducts(newProducts: []){
     this.products.splice(0);
     this.products.push(...newProducts);
   }
