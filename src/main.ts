@@ -8,10 +8,10 @@ import { RestDataSource } from "./data/restDataSource";
 Vue.config.productionTip = false
 
 new Vue({
-  store,  
+  store,   
   provide: () => ({ 
     eventBus: new Vue(),
-    restDataSource: new RestDataSource()
+    restDataSource: new RestDataSource(new Vue())
   }),
   render: h => h(App),
 }).$mount('#app')

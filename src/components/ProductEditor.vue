@@ -1,9 +1,9 @@
 <template>
     <div>
-      <editor-field v-bind:label="idLabel" :property="product.id"  name="id"></editor-field>      
-      <editor-field v-bind:label="nameLabel" :property="product.name" name="name"></editor-field>
-      <editor-field v-bind:label="categoryLabel" :property="product.category" name="catgory"></editor-field>
-      <editor-field v-bind:label="priceLabel" :property="product.price" name="price"></editor-field>
+      <editor-field v-bind:label="idLabel" :property ="product.id"  name="id"></editor-field>      
+      <editor-field v-bind:label="nameLabel" :property ="product.name" name="name"></editor-field>
+      <editor-field v-bind:label="categoryLabel" :property ="product.category" name="category"></editor-field>
+      <editor-field v-bind:label="priceLabel" :property ="product.price" name="price"></editor-field>
       <div class="text-center"> 
         <button class="btn btn-primary" @click="save">
           {{ editing ? "Save": "Create"}}
@@ -20,6 +20,7 @@ import EditorField from "./EditorField.vue";
 type productType = {
   id: number;
   name: string;
+  category: string;
   price: number;
 }; 
 
@@ -52,27 +53,26 @@ export default class ProductEditor extends Vue {
 
   startCreate(){
     this.editing = false;
-    this.product = {
-      id: 0,
-      name: "",
-      category: "",
-      price: 0
-    };
+    this.product = {};
   }
 
   created(){
-    this.eventBus.$on("create", this.startCreate);
+    //this.eventBus.$on("create", this.startCreate);
     this.eventBus.$on("edit", this.startEdit);
+    this.eventBus.$on("clearFields", this.startCreate);
     this.localBus.$on("change", 
-      (change: any) => { 
-        this.product[change.name] = change.value
+      (change: any) => {         
+        this.product[change.name] = change.value        
     });
   }
 
   save(){
-    this.eventBus.$emit("complete", this.product);
-    this.startCreate();
-    console.log(`Edit Complete: ${JSON.stringify(this.product)}`);
+    console.log(this.product);
+    this.$store.commit("saveProduct", this.product);
+    this.product = {};
+    //this.eventBus.$emit("complete", this.product);    
+    //console.log(`Edit Complete: ${JSON.stringify(this.product)}`);
+    //this.eventBus.$emit("clearFields");
   }
 
   cancel(){

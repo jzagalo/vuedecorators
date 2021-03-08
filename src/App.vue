@@ -5,6 +5,11 @@
           Toggle Colours
         </button>
     </div>  
+    <div class="row">
+      <div class="col">
+        <ErrorDisplay />
+      </div>
+    </div>
     <div class="row">  
       <div class="col-8 m-3">
         <ProductsDisplay />
@@ -21,11 +26,14 @@ import { Component, Vue, Provide } from 'vue-property-decorator';
 import validation from "./validators"
 import ProductEditor from "./components/ProductEditor.vue";
 import ProductsDisplay from "./components/ProductsDisplay.vue";
+import ErrorDisplay from "@/components/ErrorDisplay.vue";
+
 
 @Component({
   components: {
     ProductsDisplay,
-    ProductEditor
+    ProductEditor,
+    ErrorDisplay,
   }
 })
 export default class App extends Vue {

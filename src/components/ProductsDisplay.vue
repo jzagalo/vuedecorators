@@ -9,11 +9,16 @@
         <td>{{ p.id }}</td>
         <td>{{ p.name }}</td>
         <td>{{ p.category }}</td>
-        <td>{{ p.price | currency }}</td>
+        <td>{{ p.price | currency  }}</td>
         <td>
           <button class="btn btn-sm btn-primary"
-            v-on:click="editProduct(p)">
+            v-on:click="editProduct(p)" >
             Edit
+          </button>
+          &nbsp;&nbsp;&nbsp;
+          <button class="btn btn-sm btn-danger"
+            v-on:click="deleteProduct(p)">
+            Delete
           </button>
         </td>
       </tr>
@@ -31,22 +36,30 @@
 <script lang="ts">
 import { Component, Vue, Inject } from 'vue-property-decorator';
 
+type productType = {
+  id: number;
+  name: string;
+  category: string;
+  price: number;
+}; 
+
 @Component({
   filters: {
-    currency:  (value: any) => `$${value.toFixed(2)}`,
+    currency:  (value: any) => `$${parseFloat(value).toFixed(2)}`,
   }
 })
 export default class ProductsDisplay extends Vue {
-
-  private products = [
-   
-  ];  
 
   @Inject("eventBus") eventBus: any;
   @Inject("restDataSource") restDataource: any;
 
   async created(){
-    this.processProducts(await this.restDataource.getProducts());   
+   // this.processProducts(await this.restDataource.getProducts());  
+    this.eventBus.$on("complete", this.processComplete); 
+  }
+
+  get products(){
+    return this.$store.getters.filteredProducts(100);
   }
 
   editProduct(product: any){
@@ -57,9 +70,25 @@ export default class ProductsDisplay extends Vue {
     this.eventBus.$emit("create");
   }
 
-  processProducts(newProducts: []){
-    this.products.splice(0);
+  processProducts(newProducts: any){
+    this.products.splice(0);       
     this.products.push(...newProducts);
+  }
+
+  async processComplete(product: productType){    
+    const index = this.products.findIndex((p: productType) => p.id == product.id);
+    
+    if(index == -1){       
+      await this.restDataource.saveProduct(product);
+      this.products.push(product);
+    } else {     
+      await this.restDataource.updateProduct(product);
+      Vue.set(this.products, index, product);
+    }
+  }
+
+  deleteProduct(product: any){
+    this.$store.commit("deleteProduct", product);
   }
 
 }
