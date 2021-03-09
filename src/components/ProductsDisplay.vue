@@ -54,20 +54,21 @@ export default class ProductsDisplay extends Vue {
   @Inject("restDataSource") restDataource: any;
 
   async created(){
-   // this.processProducts(await this.restDataource.getProducts());  
+   // this.processProducts(await this.restDataource.getProducts()); 
+    console.log(this.$store.dispatch("getProductsAction")); 
     this.eventBus.$on("complete", this.processComplete); 
   }
 
-  get products(){
-    return this.$store.getters.filteredProducts(100);
+  get products(): any[]{
+    return this.$store.state.products;
   }
 
   editProduct(product: any){
-    this.eventBus.$emit("edit", product);
+    this.$store.commit("selectedProduct", product);
   }
 
   createNew(){
-    this.eventBus.$emit("create");
+    this.$store.commit("selectedProduct");    
   }
 
   processProducts(newProducts: any){

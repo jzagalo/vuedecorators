@@ -57,13 +57,17 @@ export default class ProductEditor extends Vue {
   }
 
   created(){
-    //this.eventBus.$on("create", this.startCreate);
-    this.eventBus.$on("edit", this.startEdit);
-    this.eventBus.$on("clearFields", this.startCreate);
-    this.localBus.$on("change", 
-      (change: any) => {         
-        this.product[change.name] = change.value        
-    });
+    this.$store.watch((state: any) => state.selectedProduct,
+    (newValue: any, oldValue: any) => {
+
+      if(newValue == null){
+        this.editing = false;
+        this.product = {};
+      }else {
+        this.product = true;
+        this.product = {};
+      }
+    })
   }
 
   save(){
@@ -76,13 +80,7 @@ export default class ProductEditor extends Vue {
   }
 
   cancel(){
-    this.product = {
-      id: 0,
-      price: 0,
-      category: "",
-      name: ""
-    };
-    this.editing = false;
+    this.$store.commit("selectedProduct");
   }
 
   @Provide() colors = {
