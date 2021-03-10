@@ -6,7 +6,7 @@
       <editor-field v-bind:label="priceLabel" :property ="product.price" name="price"></editor-field>
       <div class="text-center"> 
         <button class="btn btn-primary" @click="save">
-          {{ editing ? "Save": "Create"}}
+          {{ editing ? "Save": "Create" }}
         </button>
         <button class="btn btn-secondary" @click="cancel">Cancel</button>
      </div>
@@ -60,13 +60,14 @@ export default class ProductEditor extends Vue {
     this.$store.watch((state: any) => state.selectedProduct,
     (newValue: any, oldValue: any) => {
 
-      if(newValue == null){
+      if(newValue == null) {
         this.editing = false;
         this.product = {};
-      }else {
-        this.product = true;
-        this.product = {};
+      } else {
+        this.editing = true;
+        this.product = newValue;        
       }
+
     })
   }
 

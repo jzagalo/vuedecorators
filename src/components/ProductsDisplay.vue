@@ -35,6 +35,7 @@
 
 <script lang="ts">
 import { Component, Vue, Inject } from 'vue-property-decorator';
+import { Action, State, Getter, Mutation } from "vuex-class";
 
 type productType = {
   id: number;
@@ -52,24 +53,16 @@ export default class ProductsDisplay extends Vue {
 
   @Inject("eventBus") eventBus: any;
   @Inject("restDataSource") restDataource: any;
+  @Action("getProductsAction") getProducts!: () => void;
+  @Mutation("deleteProduct") deleteProduct!: () => void;
+  @Mutation("selectedProduct") createNew!: () => void;
+  @Mutation("selectedProduct") editProduct!: () => void;
+  @State("products") products!: productType[];
 
-  async created(){
-   // this.processProducts(await this.restDataource.getProducts()); 
-    console.log(this.$store.dispatch("getProductsAction")); 
+  async created() {    
+    this.getProducts();
     this.eventBus.$on("complete", this.processComplete); 
-  }
-
-  get products(): any[]{
-    return this.$store.state.products;
-  }
-
-  editProduct(product: any){
-    this.$store.commit("selectedProduct", product);
-  }
-
-  createNew(){
-    this.$store.commit("selectedProduct");    
-  }
+  }  
 
   processProducts(newProducts: any){
     this.products.splice(0);       
@@ -86,11 +79,7 @@ export default class ProductsDisplay extends Vue {
       await this.restDataource.updateProduct(product);
       Vue.set(this.products, index, product);
     }
-  }
-
-  deleteProduct(product: any){
-    this.$store.commit("deleteProduct", product);
-  }
+  } 
 
 }
 </script>
