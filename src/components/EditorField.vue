@@ -1,10 +1,8 @@
 <template>
-  <div class="form-group">
-      {{ componentValue }}
+  <div class="form-group">      
     <label>{{formattedLabel}}</label>
-    <input v-model="componentValue" 
-           :class="[colours.bg, colours.text]"
-           class="form-control"  :name="name" :type="setType()" />
+    <input v-model="componentValue" :class="[colours.bg, colours.text]"
+           class="form-control" :name="name" :type="setType()" />
  </div>
 </template>
 

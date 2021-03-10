@@ -36,6 +36,7 @@ export default class ProductEditor extends Vue {
   private nameLabel = "Name";
   private categoryLabel = "Category";
   private priceLabel = "Price";
+  private unWatcher!: any;
   private localBus = new Vue();
   @Inject("eventBus") private eventBus: any;
   @Provide() private editingEventBus = this.localBus;
@@ -56,28 +57,29 @@ export default class ProductEditor extends Vue {
     this.product = {};
   }
 
-  created(){
-    this.$store.watch((state: any) => state.selectedProduct,
-    (newValue: any, oldValue: any) => {
-
-      if(newValue == null) {
-        this.editing = false;
-        this.product = {};
-      } else {
-        this.editing = true;
-        this.product = newValue;        
-      }
-
-    })
+  selectProduct(selectedProduct: any){
+    this.product = {};
+    if(selectedProduct == null){
+      this.editing = false;      
+    }else{
+      this.editing = true; 
+      this.product = selectedProduct;   
+    }
   }
 
-  save(){
-    console.log(this.product);
+  created(){
+    this.unWatcher = this.$store.watch(
+      (state: any) => state.selectedProduct, this.selectProduct);
+    this.selectProduct(this.$store.state.selectedProduct);
+  }
+
+  beforeDestroy(){
+    this.unWatcher();
+  }
+
+  save(){    
     this.$store.commit("saveProduct", this.product);
-    this.product = {};
-    //this.eventBus.$emit("complete", this.product);    
-    //console.log(`Edit Complete: ${JSON.stringify(this.product)}`);
-    //this.eventBus.$emit("clearFields");
+    this.product = {}; 
   }
 
   cancel(){

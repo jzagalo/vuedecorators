@@ -43,6 +43,10 @@ export default class App extends Vue {
     text: "text-white"
   };
 
+  created(){
+    this.$store.dispatch("getProductsAction");
+  }
+
   @Provide() colors = this.reactiveColors;
   labelFormatter = (value: string) => `Enter ${value}:`
 

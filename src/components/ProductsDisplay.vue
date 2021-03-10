@@ -1,6 +1,6 @@
 <template>
  <div>
-    <table class="table table-sm table-striped table-bordered" :class="tableClass">
+    <table class="table table-sm table-bordered" :class="{ 'table-striped': useStripedTable }">
       <tr>
         <th>ID</th><th>Name</th><th>Category</th><th>Price</th><th></th>
       </tr>
@@ -53,7 +53,7 @@ export default class ProductsDisplay extends Vue {
 
   @Inject("eventBus") eventBus: any;
   @Inject("restDataSource") restDataource: any;
-  @Action("getProductsAction") getProducts!: () => void;
+  //@Action("getProductsAction") getProducts!: () => void;
   @Mutation("deleteProduct") deleteProduct!: () => void;
   @Mutation("selectedProduct") createNew!: () => void;
   @Mutation("selectedProduct") editProduct!: () => void;
@@ -65,8 +65,8 @@ export default class ProductsDisplay extends Vue {
   @Mutation("prefs/setEditButtonColor") setEditButtonColor!: (val: boolean) => void;
   @Mutation("prefs/setDeleteButtonColor") setDeleteButtonColor!: (val: boolean) => void;
 
-  async created() {    
-    this.getProducts();
+  created() {       
+    //this.getProducts();
     this.setEditButtonColor(false);
     this.setDeleteButtonColor(false);
   }  
