@@ -1,6 +1,6 @@
 <template>
  <div>
-    <table class="table table-sm table-striped table-bordered">
+    <table class="table table-sm table-striped table-bordered" :class="tableClass">
       <tr>
         <th>ID</th><th>Name</th><th>Category</th><th>Price</th><th></th>
       </tr>
@@ -12,12 +12,12 @@
         <td>{{ p.price | currency  }}</td>
         <td>
           <button class="btn btn-sm btn-primary"
-            v-on:click="editProduct(p)" >
+            v-on:click="editProduct(p)" :class="editClass" >
             Edit
           </button>
           &nbsp;&nbsp;&nbsp;
           <button class="btn btn-sm btn-danger"
-            v-on:click="deleteProduct(p)">
+            v-on:click="deleteProduct(p)" :class="deleteClass">
             Delete
           </button>
         </td>
@@ -58,10 +58,17 @@ export default class ProductsDisplay extends Vue {
   @Mutation("selectedProduct") createNew!: () => void;
   @Mutation("selectedProduct") editProduct!: () => void;
   @State("products") products!: productType[];
+  @State(state => state.prefs.stripedTable) useStripedTable!: boolean;
+  @Getter("prefs/tableClass") tableClass!: string;
+  @Getter("prefs/editClass") editClass!: string;
+  @Getter("prefs/deleteClass") deleteClass!: string;
+  @Mutation("prefs/setEditButtonColor") setEditButtonColor!: (val: boolean) => void;
+  @Mutation("prefs/setDeleteButtonColor") setDeleteButtonColor!: (val: boolean) => void;
 
   async created() {    
     this.getProducts();
-    this.eventBus.$on("complete", this.processComplete); 
+    this.setEditButtonColor(false);
+    this.setDeleteButtonColor(false);
   }  
 
   processProducts(newProducts: any){

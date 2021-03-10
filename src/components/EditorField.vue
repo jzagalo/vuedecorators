@@ -37,7 +37,7 @@ export default class EditorField extends Vue {
     }
 
     @Watch("componentValue")
-    changeValue(newValue: any) {        
+    changeValue(newValue: any): void {        
         this.editingEventBus.$emit("change", {
             name: this.name, value: this.componentValue
         })
