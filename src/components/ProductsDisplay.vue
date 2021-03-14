@@ -52,11 +52,9 @@ type productType = {
 export default class ProductsDisplay extends Vue {
 
   @Inject("eventBus") eventBus: any;
-  @Inject("restDataSource") restDataource: any;
-  //@Action("getProductsAction") getProducts!: () => void;
-  @Mutation("deleteProduct") deleteProduct!: () => void;
-  @Mutation("selectedProduct") createNew!: () => void;
-  @Mutation("selectedProduct") editProduct!: () => void;
+  @Inject("restDataSource") restDataource: any; 
+  @Mutation("deleteProduct") deleteProduct!: () => void;  
+  @Mutation("selectedProduct") selectProduct!: (product?: productType) => void;
   @State("products") products!: productType[];
   @State(state => state.prefs.stripedTable) useStripedTable!: boolean;
   @Getter("prefs/tableClass") tableClass!: string;
@@ -64,6 +62,7 @@ export default class ProductsDisplay extends Vue {
   @Getter("prefs/deleteClass") deleteClass!: string;
   @Mutation("prefs/setEditButtonColor") setEditButtonColor!: (val: boolean) => void;
   @Mutation("prefs/setDeleteButtonColor") setDeleteButtonColor!: (val: boolean) => void;
+  @Mutation("nav/selectedComponent") selectComponent!: (name: string) => void;
 
   created() {       
     //this.getProducts();
@@ -71,23 +70,15 @@ export default class ProductsDisplay extends Vue {
     this.setDeleteButtonColor(false);
   }  
 
-  processProducts(newProducts: any){
-    this.products.splice(0);       
-    this.products.push(...newProducts);
-  }
-
-  async processComplete(product: productType){    
-    const index = this.products.findIndex((p: productType) => p.id == product.id);
-    
-    if(index == -1){       
-      await this.restDataource.saveProduct(product);
-      this.products.push(product);
-    } else {     
-      await this.restDataource.updateProduct(product);
-      Vue.set(this.products, index, product);
-    }
+  editProduct(product: productType){
+    this.selectProduct(product);
+    this.selectComponent("editor");    
   } 
-
+  
+  createNew(){
+    this.selectProduct();
+    this.selectComponent("editor"); 
+  }
 }
 </script>
 

@@ -7,7 +7,6 @@
 </template>
 
 <script lang="ts">
-import { VueConstructor } from 'vue';
 import { Vue, Component, Inject } from 'vue-property-decorator';
 
 @Component

@@ -1,8 +1,8 @@
 <template>
   <div class="form-group">      
     <label>{{formattedLabel}}</label>
-    <input v-model="componentValue" :class="[colours.bg, colours.text]"
-           class="form-control" :name="name" :type="setType()" />
+    <input  :class="[colours.bg, colours.text]"
+           class="form-control" :name="name" :type="setType()" :value="property"  @input="$emit('update:property', $event.target.value)" />
  </div>
 </template>
 

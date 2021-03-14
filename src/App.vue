@@ -1,23 +1,34 @@
 <template>
   <div class="container-fluid">  
-    <div class="text-right m-2">
-        <button class="btn btn-primary" @click="toggleColors">
-          Toggle Colours
-        </button>
-    </div>  
+   <div class="row">
+      <div class="col text-center m-2">
+        <div class="btn-group btn-group-toggle">
+          <label class="btn btn-info"  @click="selectComponent('table')" :class="{active: (selected == 'table') }">
+              <input type="radio" v-model="selected" value="table" /> Standard Features
+          </label>
+          <label class="btn btn-info" @click="selectComponent('editor')"  :class="{active: (selected == 'editor') }">
+              <input type="radio" v-model="selected" value="editor" /> Advanced Features
+          </label>
+          <button class="btn btn-success"
+               @click="selectComponent('summary')" 
+               :class="{ active: (selected == 'summary') }" >
+            Summary
+          </button>
+      </div>
+    </div>
+ </div> 
     <div class="row">
       <div class="col">
         <ErrorDisplay />
       </div>
     </div>
-    <div class="row">  
-      <div class="col-8 m-3">
-        <ProductsDisplay />
-      </div> 
-      <div class="col m-3">
-        <ProductEditor />
-      </div>         
-    </div>
+    <div class="row">
+      <div class="col">
+        <keep-alive>
+          <component :is="selectedComponent()"></component>
+        </keep-alive>
+      </div>
+    </div>    
   </div>
 </template>
 
@@ -27,16 +38,24 @@ import validation from "./validators"
 import ProductEditor from "./components/ProductEditor.vue";
 import ProductsDisplay from "./components/ProductsDisplay.vue";
 import ErrorDisplay from "@/components/ErrorDisplay.vue";
+import { Mutation, State } from "vuex-class";
+import LoadingMessage from "@/components/LoadingMessage.vue";
 
+
+const DataSummary = () => import(/* webpackChunkName: "advanced" */'@/components/DataSummary.vue');
 
 @Component({
   components: {
     ProductsDisplay,
     ProductEditor,
-    ErrorDisplay,
+    ErrorDisplay, 
+    DataSummary,   
   }
 })
 export default class App extends Vue {
+  
+  @State(state => state.nav.selected) private selected!: string;  
+  @Mutation("nav/selectedComponent") selectComponent!: () => void;
 
   private reactiveColors = {
     bg: "bg-secondary",
@@ -45,22 +64,32 @@ export default class App extends Vue {
 
   created(){
     this.$store.dispatch("getProductsAction");
+    this.selectedComponent();
+  } 
+
+  selectedComponent(){
+    switch(this.selected){
+      case "table":
+        return ProductsDisplay
+      case "editor":
+        return ProductEditor
+      case "summary":
+        return DataSummary;
+    }
   }
 
   @Provide() colors = this.reactiveColors;
-  labelFormatter = (value: string) => `Enter ${value}:`
-
+  labelFormatter = (value: string) => `Enter ${value}:`  
 
   toggleColors(){
-    if(this.reactiveColors.bg == "bg-secondary"){
+    if(this.reactiveColors.bg == "bg-secondary") {
        this.reactiveColors.bg = "bg-light";
        this.reactiveColors.text = "text-danger";
-    }else{
+    } else {
        this.reactiveColors.bg = "bg-secondary";
        this.reactiveColors.text = "text-white";
     }
   }
-
 
 }
 </script>
