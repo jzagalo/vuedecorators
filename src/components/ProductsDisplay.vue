@@ -12,7 +12,7 @@
         <td>{{ p.price | currency  }}</td>
         <td>
           <router-link class="btn btn-sm"
-            :to="'/edit/' + p.id " :class="editClass" >
+            :to="{ name: 'editor' , params: { op: 'edit', id: p.id } }" :class="editClass" >
             Edit
           </router-link>
           &nbsp;&nbsp;&nbsp;
@@ -25,8 +25,10 @@
     </tbody>
     </table>
     <div class="text-center">
-      <router-link class="btn btn-primary"  to="/create">
-            Create New
+      <router-link class="btn btn-sm"
+            :to="{ name: 'editor', params: { op: 'create' }}" 
+            :class="editClass" >
+            CreateNew
       </router-link>
     </div>
  </div>

@@ -1,5 +1,8 @@
 <template>
     <div>
+      <h3 class="btn-primary text-center text-white p-2">
+      {{ editing ? "Edit" : "Create"}}
+      </h3>
       <editor-field v-bind:label="idLabel" :property.sync="product.id"  name="id"></editor-field>      
       <editor-field v-bind:label="nameLabel" :property.sync="product.name" name="name"></editor-field>
       <editor-field v-bind:label="categoryLabel" :property.sync="product.category" name="category"></editor-field>
@@ -8,7 +11,8 @@
         <button class="btn btn-primary" @click="save">
           {{ editing ? "Save": "Create" }}
         </button>
-        <router-link to="/" class="btn btn-secondary">Cancel</router-link>
+        <!-- <router-link to="/" class="btn btn-secondary">Cancel</router-link> -->
+        <router-link v-bind:to="{name: 'table'}" class="btn btn-secondary"> Cancel </router-link>
      </div>    
   </div>
 </template>
@@ -84,7 +88,7 @@ export default class ProductEditor extends Vue {
 
   async save(){     
     await this.$store.dispatch("saveProductAction", this.product);
-    this.$router.push("/");
+    this.$router.push({name: "table"});
     this.product = {};    
   } 
 
