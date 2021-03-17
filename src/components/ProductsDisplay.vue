@@ -1,6 +1,6 @@
 <template>
  <div>
-    <table class="table table-sm table-bordered" :class="{ 'table-striped': useStripedTable }">
+    <table class="table table-sm table-bordered" :class="{'table-striped': useStripedTable }">
       <tr>
         <th>ID</th><th>Name</th><th>Category</th><th>Price</th><th></th>
       </tr>
@@ -11,10 +11,10 @@
         <td>{{ p.category }}</td>
         <td>{{ p.price | currency  }}</td>
         <td>
-          <button class="btn btn-sm btn-primary"
-            v-on:click="editProduct(p)" :class="editClass" >
+          <router-link class="btn btn-sm"
+            :to="'/edit/' + p.id " :class="editClass" >
             Edit
-          </button>
+          </router-link>
           &nbsp;&nbsp;&nbsp;
           <button class="btn btn-sm btn-danger"
             v-on:click="deleteProduct(p)" :class="deleteClass">
@@ -25,10 +25,9 @@
     </tbody>
     </table>
     <div class="text-center">
-      <button class="btn btn-primary" 
-            v-on:click="createNew">
+      <router-link class="btn btn-primary"  to="/create">
             Create New
-      </button>
+      </router-link>
     </div>
  </div>
 </template>

@@ -16,10 +16,10 @@
 <script lang="ts">
 import { Component, Vue, Provide, Inject, Watch } from 'vue-property-decorator';
 import EditorField from "./EditorField.vue";
-import { Mutation } from "vuex-class";
+
 
 type productType = {
-  id: number;
+  id: number | string;
   name: string;
   category: string;
   price: number;
@@ -57,11 +57,16 @@ export default class ProductEditor extends Vue {
     this.product = {};
   }
 
-  selectProduct(selectedProduct: any){
+  selectProduct() {
     this.product = {};
-    if(selectedProduct == null){
+    if(this.$route.params.op == "create"){
       this.editing = false;      
-    }else{
+    } else {
+      const productId = this.$route.params.id;
+      const selectedProduct = 
+        this.$store.state.products.find(
+          (p: productType) => p.id == productId
+        );
       this.editing = true; 
       this.product = selectedProduct;   
     }
@@ -70,8 +75,7 @@ export default class ProductEditor extends Vue {
   created(){
     this.unWatcher = this.$store.watch(
       (state: any) => state.selectedProduct, this.selectProduct);
-    this.selectProduct(this.$store.state.selectedProduct);
-
+    this.selectProduct();
   }
 
   beforeDestroy(){

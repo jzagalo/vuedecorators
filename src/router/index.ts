@@ -7,8 +7,9 @@ import ProductEditor from '../components/ProductEditor.vue';
 Vue.use(VueRouter);
 
 export default new VueRouter({
+    mode: "history",
     routes: [
-        { path: "/", component: ProductDisplay },
-        { path: "/edit", component: ProductEditor }
+        {  path: "/", component: ProductDisplay, alias:"/list" },
+        { path: "/:op(create|edit)/:id(\\d+)?", component: ProductEditor },      
     ]
 })
