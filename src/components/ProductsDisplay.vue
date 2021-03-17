@@ -62,22 +62,20 @@ export default class ProductsDisplay extends Vue {
   @Getter("prefs/deleteClass") deleteClass!: string;
   @Mutation("prefs/setEditButtonColor") setEditButtonColor!: (val: boolean) => void;
   @Mutation("prefs/setDeleteButtonColor") setDeleteButtonColor!: (val: boolean) => void;
-  @Mutation("nav/selectedComponent") selectComponent!: (name: string) => void;
-
-  created() {       
-    //this.getProducts();
+ 
+  created() {   
     this.setEditButtonColor(false);
     this.setDeleteButtonColor(false);
   }  
 
   editProduct(product: productType){
     this.selectProduct(product);
-    this.selectComponent("editor");    
+    this.$router.push("/edit");   
   } 
   
   createNew(){
     this.selectProduct();
-    this.selectComponent("editor"); 
+    this.$router.push("/edit");  
   }
 }
 </script>

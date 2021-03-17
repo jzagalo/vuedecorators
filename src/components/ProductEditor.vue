@@ -8,7 +8,7 @@
         <button class="btn btn-primary" @click="save">
           {{ editing ? "Save": "Create" }}
         </button>
-        <button class="btn btn-secondary" @click="cancel">Cancel</button>
+        <router-link to="/" class="btn btn-secondary">Cancel</router-link>
      </div>    
   </div>
 </template>
@@ -41,8 +41,6 @@ export default class ProductEditor extends Vue {
   private localBus = new Vue();
   @Inject("eventBus") private eventBus: any;
   @Provide() private editingEventBus = this.localBus;
-  
-
 
   startEdit(product: any) {
     this.editing = true;
@@ -80,16 +78,11 @@ export default class ProductEditor extends Vue {
     this.unWatcher();
   }
 
-  async save(){    
-    console.log(this.product);
+  async save(){     
     await this.$store.dispatch("saveProductAction", this.product);
-    this.$store.commit("nav/selectedComponent", "table");    
-  }
-
-  cancel(){
-    this.$store.commit("selectedProduct");
-    this.$store.commit("nav/selectedComponent", "table");
-  }
+    this.$router.push("/");
+    this.product = {};    
+  } 
 
   @Provide() colors = {
     bg: "bg-light",

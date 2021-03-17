@@ -37,11 +37,7 @@ type productType = {
     }
 })
 export default class DataSummary extends Vue {
-    @State("products") products!: productType[];
-
-    mounted(){
-        console.log(this.products.map((p: any) => p.price));
-    }
+    @State("products") products!: productType[];   
 
     categoryCount(){
         if(this.products.length > 0){

@@ -4,11 +4,13 @@ import store from './store'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { RestDataSource } from "./data/restDataSource";
+import router from './router';
 
 Vue.config.productionTip = false
 
 new Vue({
-  store,   
+  store,  
+  router, 
   provide: () => ({ 
     eventBus: new Vue(),
     restDataSource: new RestDataSource(new Vue())
