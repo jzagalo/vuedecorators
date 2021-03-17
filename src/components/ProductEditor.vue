@@ -10,9 +10,9 @@
       <div class="text-center"> 
         <button class="btn btn-primary" @click="save">
           {{ editing ? "Save": "Create" }}
-        </button>
-        <!-- <router-link to="/" class="btn btn-secondary">Cancel</router-link> -->
+        </button>        
         <router-link v-bind:to="{name: 'table'}" class="btn btn-secondary"> Cancel </router-link>
+        <router-link v-if="editing" v-bind:to="nextUrl" class="btn btn-info"> Next </router-link>
      </div>    
   </div>
 </template>
@@ -61,12 +61,12 @@ export default class ProductEditor extends Vue {
     this.product = {};
   }
 
-  selectProduct() {
+  selectProduct(route: any) {
     this.product = {};
     if(this.$route.params.op == "create"){
       this.editing = false;      
     } else {
-      const productId = this.$route.params.id;
+      const productId = route.params.id;
       const selectedProduct = 
         this.$store.state.products.find(
           (p: productType) => p.id == productId
@@ -78,12 +78,28 @@ export default class ProductEditor extends Vue {
 
   created(){
     this.unWatcher = this.$store.watch(
-      (state: any) => state.selectedProduct, this.selectProduct);
-    this.selectProduct();
+      (state: any) => state.selectedProduct, () => this.selectProduct(this.$route));
+    this.selectProduct(this.$route);
   }
 
   beforeDestroy(){
     this.unWatcher();
+  }
+
+  beforeRouteUpdate(to: any, from: any, next: any){
+    console.log(to);
+    this.selectProduct(to);
+    next();
+  }
+
+  nextUrl(){
+    if(this.product.id != null && this.$store.state.products != null){
+      const index = this.$store.state.products
+          .findIndex((p: productType) => p.id == this.product.id);
+      const target = index < this.$store.state.products.length - 1 ? index + 1 : 0;
+      return `/edit/${this.$store.state.products[target].id}`;
+    }
+    return "/edit";
   }
 
   async save(){     
